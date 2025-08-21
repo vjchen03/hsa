@@ -21,22 +21,28 @@ Built with **FastAPI**, **SQLite**, and **Jinja2 templates**, it runs entirely l
 
 2. Set up a virtual environment:
 
+    ```bash
     python -m venv .venv
 
-    # activate it 
+    Then activate it:
+    
+    ```bash
     source .venv/bin/activate   # Mac/Linux 
     .venv\Scripts\activate      # Windows
 
 3. Install dependencies
 
+    ```bash
     pip install -r requirements.txt
 
 4. Run the app
 
+    ```bash
     uvicorn app.main:app --reload
 
 5. Open in your browser
 
+    ```bash
     http://127.0.0.1:8000
 
 6. Notes
