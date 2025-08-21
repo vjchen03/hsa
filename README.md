@@ -25,8 +25,7 @@ Built with **FastAPI**, **SQLite**, and **Jinja2 templates**, it runs entirely l
     python -m venv .venv
 
     Then activate it:
-    
-    ```bash
+
     source .venv/bin/activate   # Mac/Linux 
     .venv\Scripts\activate      # Windows
 
