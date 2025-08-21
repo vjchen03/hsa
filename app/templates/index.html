@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HSA App</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1530;
+      --panel-2:#0c1230;
+      --text:#e7ecff;
+      --muted:#a5b0d6;
+      --border:rgba(255,255,255,.10);
+      --accent:#6ea8ff;
+      --accent-2:#4a7dff;
+      --ok:#7ee787;
+      --warn:#ff7b72;
+      --shadow:0 6px 24px rgba(0,0,0,.35);
+      --radius:14px;
+      --radius-sm:10px;
+      --gap:18px;
+    }
+
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+      background:
+        radial-gradient(900px 600px at -10% -10%, rgba(110,168,255,.25), transparent 50%),
+        radial-gradient(800px 500px at 110% -20%, rgba(124,58,237,.20), transparent 40%),
+        radial-gradient(900px 700px at 50% 120%, rgba(46,160,67,.15), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap { max-width: 940px; margin: 44px auto; padding: 0 20px }
+    .head {
+      padding: 20px;
+      margin-bottom: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 4px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(6px);
+      box-shadow: var(--shadow);
+    }
+    h1 { margin: 0 0 6px; font-size: 28px; letter-spacing: .2px }
+    .muted { color: var(--muted) }
+
+    /* alerts */
+    .alert{
+      padding:10px 12px;
+      border-radius:10px;
+      margin:10px 0 16px;
+      font-size:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .alert-ok{ color: var(--ok); }
+    .alert-warn{ color: var(--warn); }
+
+    .grid { display: grid; grid-template-columns: 1fr; gap: var(--gap) }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr } }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 3px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    .title { margin: 0 0 10px; font-size: 20px }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+    .stack { display: flex; flex-direction: column; gap: 10px }
+    label { font-size: 13px; color: var(--muted) }
+    .card button { margin-bottom: 6px; }
+
+    input, select, button {
+      padding: 10px 12px;
+      font-size: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0c1230;
+      color: var(--text);
+      outline: none;
+      min-height: 40px;
+    }
+    input::placeholder { color: #97a2c7 }
+    select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg,transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+      background-position: calc(100% - 16px) 50%, calc(100% - 12px) 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 30px;
+    }
+    button {
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: #0b1020;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .05s ease, filter .15s ease, box-shadow .15s ease;
+      box-shadow: 0 6px 14px rgba(110,168,255,.35);
+    }
+    button:hover { filter: brightness(1.06) }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px rgba(110,168,255,.25);
+    }
+    button:active { transform: translateY(1px) }
+    button[disabled]{
+      opacity:.6; cursor:not-allowed; box-shadow:none; filter:none;
+      background: #2a355e; color:#9fb2ff;
+    }
+
+    .hint { color: var(--muted); margin: 1rem 0 0 }
+    .badge {
+      display: inline-block;
+      border: 1px dashed var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #c8d4ff;
+      background: rgba(255,255,255,.03);
+      margin-top: 10px;
+    }
+    .ok { color: var(--ok) }
+    .warn { color: var(--warn) }
+    code {
+      background: rgba(255,255,255,.06);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: #bcd2ff;
+    }
+    .card-visual {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.03);
+      margin-top: 15px;
+    }
+
+    /* Table */
+    .table { width: 100%; border-collapse: collapse; margin-top: 8px }
+    .table th, .table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    .table th:nth-child(4),
+    .table td:nth-child(4) { text-align: right; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace }
+    .badge-ok { color: var(--ok); font-weight: 600 }
+    .badge-no { color: var(--warn); font-weight: 600 }
+    .amount-pos { color: var(--ok); font-weight: 600 }
+    .amount-neg { color: #ffd479; font-weight: 600 }
+    .amount-try { color: var(--muted); font-weight: 600 }
+
+    .legend { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px }
+    .pill { font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.03) }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="head">
+      <h1>HSA App</h1>
+      <p class="muted"> Manage your HSA: create an account, deposit funds, issue a card, and simulate purchases.</p>
+    </header>
+
+    <!-- alert messages -->
+    {% set msg = request.query_params.get('msg') %}
+    {% if msg %}
+      <div class="alert {% if msg in ['created','card_issued','deposited','purchase_ok'] %}alert-ok{% else %}alert-warn{% endif %}">
+        {% if msg == 'created' %}Account created successfully.{% endif %}
+        {% if msg == 'loaded' %}This email already has an account. We loaded it for you.{% endif %}
+        {% if msg == 'card_exists' %}You already have a virtual card. We didn’t issue another.{% endif %}
+        {% if msg == 'card_issued' %}Virtual card issued successfully.{% endif %}
+        {% if msg == 'deposited' %}Deposit recorded.{% endif %}
+        {% if msg == 'purchase_ok' %}Purchase approved.{% endif %}
+        {% if msg == 'purchase_no' %}Purchase declined.{% endif %}
+      </div>
+    {% endif %}
+
+    <!-- user -->
+    <section class="card" aria-labelledby="create-title">
+      <h2 id="create-title" class="title"> Create Account</h2>
+      <form class="stack" method="post" action="/register">
+        <div class="row" role="group" aria-label="Create account form">
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" type="email" name="email" placeholder="email@example.com" required />
+          <label class="sr-only" for="full_name">Full name</label>
+          <input id="full_name" type="text" name="full_name" placeholder="Full name" required />
+          <button type="submit" aria-label="Register or Load Account">Register / Load</button>
+        </div>
+        <p class="hint"> One user per email. Re-enter an existing email to load the same account.</p>
+      </form>
+      {% if user %}
+        <p class="hint">Loaded user: <strong>{{ user.full_name }}</strong> (<code>{{ user.email }}</code>)</p>
+      {% endif %}
+    </section>
+
+    {% if user %}
+    <div class="grid">
+      <!-- deposit -->
+      <section class="card" aria-labelledby="deposit-title">
+        <h2 id="deposit-title" class="title"> Deposit Funds</h2>
+        <form class="stack" method="post" action="/deposit">
+          <input type="hidden" name="email" value="{{ user.email }}" />
+          <div class="row" role="group" aria-label="Deposit form">
+            <label class="sr-only" for="amount">Amount</label>
+            <input id="amount" type="number" step="0.01" name="amount" placeholder="Amount (e.g. 50.00)" required />
+            <button type="submit">Deposit</button>
+          </div>
+          <div class="badge" aria-live="polite">Current balance: <strong>{{ balance_display }}</strong></div>
+        </form>
+      </section>
+
+      <!-- issue card -->
+      <section class="card" aria-labelledby="card-title">
+        <h2 id="card-title" class="title"> Virtual Card</h2>
+
+        {% if card %}
+          <form>
+            <button type="button" disabled title="Card already issued">Card already issued</button>
+          </form>
+
+          <div class="card-visual" aria-label="Virtual card details">
+            <div class="ok" style="font-weight:600; margin-bottom:6px;">Card issued</div>
+            <div>PAN: <code>{{ card.pan }}</code></div>
+            <div>CVV: <code>{{ card.cvv }}</code></div>
+            <div>Exp: <code>{{ '%02d' % card.expiry_month }}/{{ card.expiry_year }}</code></div>
+          </div>
+        {% else %}
+          <form method="post" action="/issue_card">
+            <input type="hidden" name="email" value="{{ user.email }}" />
+            <button type="submit">Issue Card</button>
+          </form>
+          <p class="hint">No card yet. Click the button to create one.</p>
+        {% endif %}
+      </section>
+    </div>
+
+    <!-- purchases --> 
+    <section class="card" aria-labelledby="purchase-title">
+      <h2 id="purchase-title" class="title"> Purchase</h2>
+      <form class="stack" method="post" action="/purchase">
+        <input type="hidden" name="email" value="{{ user.email }}" />
+        <div class="row" role="group" aria-label="Purchase form">
+          <label class="sr-only" for="p-amount">Amount</label>
+          <input id="p-amount" type="number" step="0.01" name="amount" placeholder="Amount (e.g. 25.00)" required />
+          <label class="sr-only" for="p-category">Category</label>
+          <select id="p-category" name="category" required>
+            {% for c in categories %}
+              <option value="{{ c.value }}">{{ c.value }}</option>
+            {% endfor %}
+          </select>
+          <label class="sr-only" for="p-memo">Memo</label>
+          <input id="p-memo" type="text" name="memo" placeholder="Memo (optional)" />
+          <button type="submit">Attempt Purchase</button>
+        </div>
+        <p class="hint">Enter an amount and select a category to simulate a purchase.</p>
+        <div class="legend" aria-label="Qualified categories legend">
+          <span class="pill">Qualified: <code>{{ qualified | join(', ') }}</code></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- transactions -->
+    <section class="card" aria-labelledby="txns-title">
+      <h2 id="txns-title" class="title"> Recent Transactions</h2>
+      {% if txns and txns|length > 0 %}
+        <table class="table" role="table" aria-label="Recent transactions">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 22%;">Date</th>
+              <th scope="col" style="width: 20%;">Category</th>
+              <th scope="col" style="width: 28%;">Memo</th>
+              <th scope="col" style="width: 15%;">Amount</th>
+              <th scope="col" style="width: 15%;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in txns %}
+              {% set cat = t.category.value %}
+              <tr>
+                <td class="mono">
+                  {% if t.created_at %}{{ t.created_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}
+                </td>
+                <td><code>{{ cat }}</code></td>
+                <td>{{ t.meta or '' }}</td>
+                <td class="mono">
+                  {% if cat == 'deposit' %}
+                    <span class="amount-pos">+{{ fmt_dollars(t.amount_cents) }}</span>
+                  {% else %}
+                    {% if t.approved %}
+                      <span class="amount-neg">-{{ fmt_dollars(t.amount_cents) }}</span>
+                    {% else %}
+                      <span class="amount-try">±{{ fmt_dollars(t.amount_cents) }}</span>
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if t.approved %}
+                    <span class="badge-ok">Approved</span>
+                  {% else %}
+                    <span class="badge-no">Declined</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="hint">No transactions yet. Try a deposit or purchase above.</p>
+      {% endif %}
+    </section>
+    {% else %}
+      <section class="card">
+        <p class="warn">No user loaded. Register above to continue.</p>
+      </section>
+    {% endif %}
+
+    <footer class="muted" style="opacity:.8; margin-top:8px; font-size:13px">
+      Demo only • No real money • Data stored in <code>hsa.db</code>
+    </footer>
+  </div>
+
+  <style>
+    .sr-only {
+      position: absolute !important;
+      height: 1px; width: 1px;
+      overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+      white-space: nowrap; border: 0; padding: 0; margin: -1px;
+    }
+  </style>
+</body>
+</html>
